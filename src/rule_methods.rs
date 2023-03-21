@@ -7,8 +7,8 @@ use crate::data_type::ip_to_vec;
 use crate::error::BuilderError;
 use crate::expr::ct::{ConnTrackState, Conntrack, ConntrackKey};
 use crate::expr::{
-    Bitwise, Cmp, CmpOp, HighLevelPayload, IPv4HeaderField, IPv6HeaderField, Immediate, Meta,
-    MetaType, NetworkHeaderField, TCPHeaderField, TransportHeaderField, UDPHeaderField,
+    Bitwise, Cmp, CmpOp, HighLevelPayload, IPv4HeaderField, IPv6HeaderField, Immediate, Masquerade,
+    Meta, MetaType, NetworkHeaderField, TCPHeaderField, TransportHeaderField, UDPHeaderField,
     VerdictKind,
 };
 use crate::Rule;
@@ -221,7 +221,7 @@ impl Rule {
     /// Adds the `Masquerade` verdict to the rule. The packet will have its
     /// source address rewritten.
     pub fn masquerade(mut self) -> Self {
-        self.add_expr(Immediate::new_verdict(VerdictKind::Masquerade));
+        self.add_expr(Masquerade {});
         self
     }
 }
