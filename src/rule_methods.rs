@@ -172,6 +172,26 @@ impl Rule {
         self.add_expr(Cmp::new(CmpOp::Eq, iface_vec));
         Ok(self)
     }
+    /// Matches packets leaving through `oface_index`. Interface indexes can be queried with
+    /// `iface_index()`.
+    pub fn oface_id(mut self, oface_index: libc::c_uint) -> Self {
+        self.add_expr(Meta::new(MetaType::Oif));
+        self.add_expr(Cmp::new(CmpOp::Eq, oface_index.to_be_bytes()));
+        self
+    }
+    /// Matches packets leaving through `oface_name`, an interface name, as in "wlan0" or "lo"
+    pub fn oface(mut self, oface_name: &str) -> Result<Self, BuilderError> {
+        if oface_name.len() >= libc::IFNAMSIZ {
+            return Err(BuilderError::InterfaceNameTooLong);
+        }
+        let mut oface_vec = oface_name.as_bytes().to_vec();
+        // null terminator
+        oface_vec.push(0u8);
+
+        self.add_expr(Meta::new(MetaType::OifName));
+        self.add_expr(Cmp::new(CmpOp::Eq, oface_vec));
+        Ok(self)
+    }
     /// Matches packets whose source IP address is `saddr`.
     pub fn saddr(self, ip: IpAddr) -> Self {
         self.match_ip(ip, true)
