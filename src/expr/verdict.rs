@@ -47,4 +47,5 @@ pub enum VerdictKind {
         chain: String,
     },
     Return,
+    Masquerade,
 }

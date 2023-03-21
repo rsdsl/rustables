@@ -32,6 +32,7 @@ impl Immediate {
             VerdictKind::Jump { .. } => VerdictType::Jump,
             VerdictKind::Goto { .. } => VerdictType::Goto,
             VerdictKind::Return => VerdictType::Return,
+            VerdictKind::Masquerade => VerdictType::Goto,
         };
         let mut data = Verdict::default().with_code(code);
         if let VerdictKind::Jump { chain } | VerdictKind::Goto { chain } = kind {

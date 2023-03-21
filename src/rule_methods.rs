@@ -218,6 +218,12 @@ impl Rule {
         self.add_expr(Immediate::new_verdict(VerdictKind::Drop));
         self
     }
+    /// Adds the `Masquerade` verdict to the rule. The packet will have its
+    /// source address rewritten.
+    pub fn masquerade(mut self) -> Self {
+        self.add_expr(Immediate::new_verdict(VerdictKind::Masquerade));
+        self
+    }
 }
 
 /// Looks up the interface index for a given interface name.
