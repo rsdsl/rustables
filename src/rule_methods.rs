@@ -110,9 +110,14 @@ impl Rule {
 impl Rule {
     /// Matches ICMP packets.
     pub fn icmp(mut self) -> Self {
-        // quid of icmpv6?
         self.add_expr(Meta::new(MetaType::L4Proto));
         self.add_expr(Cmp::new(CmpOp::Eq, [libc::IPPROTO_ICMP as u8]));
+        self
+    }
+    /// Matches ICMPv6 packets.
+    pub fn icmpv6(mut self) -> Self {
+        self.add_expr(Meta::new(MetaType::L4Proto));
+        self.add_expr(Cmp::new(CmpOp::Eq, [libc::IPPROTO_ICMPV6 as u8]));
         self
     }
     /// Matches IGMP packets.
