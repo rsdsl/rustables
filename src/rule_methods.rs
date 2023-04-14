@@ -241,7 +241,7 @@ impl Rule {
         }
         self.add_expr(Nat {
             nat_type: Some(NatType::DNat),
-            family: Some(ProtocolFamily::Inet),
+            family: Some(ProtocolFamily::Ipv4),
             ip_register: Some(Register::Reg1),
             port_register: port.map(|_| Register::Reg2),
         });
