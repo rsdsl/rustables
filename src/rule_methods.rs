@@ -8,10 +8,10 @@ use crate::error::BuilderError;
 use crate::expr::ct::{ConnTrackState, Conntrack, ConntrackKey};
 use crate::expr::{
     Bitwise, Cmp, CmpOp, HighLevelPayload, IPv4HeaderField, IPv6HeaderField, Immediate, Masquerade,
-    Meta, MetaType, NetworkHeaderField, TCPHeaderField, TransportHeaderField, UDPHeaderField,
-    VerdictKind,
+    Meta, MetaType, Nat, NatType, NetworkHeaderField, Register, TCPHeaderField,
+    TransportHeaderField, UDPHeaderField, VerdictKind,
 };
-use crate::Rule;
+use crate::{ProtocolFamily, Rule};
 
 /// Simple protocol description. Note that it does not implement other layer 4 protocols as
 /// IGMP et al. See [`Rule::igmp`] for a workaround.
@@ -227,6 +227,24 @@ impl Rule {
     /// source address rewritten.
     pub fn masquerade(mut self) -> Self {
         self.add_expr(Masquerade {});
+        self
+    }
+    /// Adds the `Nat` verdict to the rule, with type `DNat`. The packet
+    /// will have its destination address and optionally port rewritten.
+    pub fn dnat(mut self, dst: IpAddr, port: Option<u16>) -> Self {
+        self.add_expr(Immediate::new_data(ip_to_vec(dst), Register::Reg1));
+        if let Some(port) = port {
+            self.add_expr(Immediate::new_data(
+                port.to_be_bytes().to_vec(),
+                Register::Reg2,
+            ));
+        }
+        self.add_expr(Nat {
+            nat_type: Some(NatType::DNat),
+            family: Some(ProtocolFamily::Inet),
+            ip_register: Some(Register::Reg1),
+            port_register: port.map(|_| Register::Reg2),
+        });
         self
     }
 }
