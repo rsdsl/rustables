@@ -176,6 +176,7 @@ create_expr_variant!(
     [Conntrack, Conntrack],
     [Counter, Counter],
     [ExpressionRaw, ExpressionRaw],
+    [ExtHdr, ExtHdr],
     [Immediate, Immediate],
     [Log, Log],
     [Lookup, Lookup],
