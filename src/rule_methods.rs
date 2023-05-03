@@ -8,9 +8,10 @@ use crate::error::BuilderError;
 use crate::expr::ct::{ConnTrackState, Conntrack, ConntrackKey};
 use crate::expr::{
     Bitwise, Cmp, CmpOp, ExtHdr, ExtHdrOp, HighLevelPayload, IPv4HeaderField, IPv6HeaderField,
-    Immediate, Masquerade, Meta, MetaType, Nat, NatType, NetworkHeaderField, Register,
+    Immediate, Masquerade, Meta, MetaType, Nat, NatType, NetworkHeaderField, Payload, Register,
     TCPHeaderField, TransportHeaderField, UDPHeaderField, VerdictKind,
 };
+use crate::sys::NFT_PAYLOAD_TRANSPORT_HEADER;
 use crate::{ProtocolFamily, Rule};
 
 /// Simple protocol description. Note that it does not implement other layer 4 protocols as
@@ -263,6 +264,19 @@ impl Rule {
                 .with_op(ExtHdrOp::TCPOpt),
         );
         self
+    }
+    /// Matches TCP packets whose flags include SYN.
+    pub fn syn(mut self) -> Result<Self, BuilderError> {
+        self.add_expr(
+            Payload::default()
+                .with_base(NFT_PAYLOAD_TRANSPORT_HEADER)
+                .with_offset(13u32)
+                .with_len(1u32)
+                .with_dreg(Register::Reg1),
+        );
+        self.add_expr(Bitwise::new(2u8.to_be_bytes(), 0u8.to_be_bytes())?);
+        self.add_expr(Cmp::new(CmpOp::Neq, 0u8.to_be_bytes()));
+        Ok(self)
     }
 }
 
