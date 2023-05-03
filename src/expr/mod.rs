@@ -24,7 +24,7 @@ pub use self::counter::*;
 pub mod ct;
 pub use self::ct::*;
 
-pub mod exthdr;
+mod exthdr;
 pub use self::exthdr::*;
 
 mod immediate;
