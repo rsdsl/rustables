@@ -12,9 +12,9 @@ use super::{Expression, Register};
 #[nfnetlink_enum(u32, nested = true)]
 pub enum ExtHdrOp {
     /// IPv6.
-    Ipv6 = NFT_EXTHDR_OP_IPV6,
+    IPv6 = NFT_EXTHDR_OP_IPV6,
     /// TCP options.
-    TcpOpt = NFT_EXTHDR_OP_TCPOPT,
+    TCPOpt = NFT_EXTHDR_OP_TCPOPT,
 }
 
 /// Interacts with layer 4 header options.
