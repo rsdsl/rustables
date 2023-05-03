@@ -7,9 +7,9 @@ use crate::data_type::ip_to_vec;
 use crate::error::BuilderError;
 use crate::expr::ct::{ConnTrackState, Conntrack, ConntrackKey};
 use crate::expr::{
-    Bitwise, Cmp, CmpOp, HighLevelPayload, IPv4HeaderField, IPv6HeaderField, Immediate, Masquerade,
-    Meta, MetaType, Nat, NatType, NetworkHeaderField, Register, TCPHeaderField,
-    TransportHeaderField, UDPHeaderField, VerdictKind,
+    Bitwise, Cmp, CmpOp, ExtHdr, ExtHdrOp, HighLevelPayload, IPv4HeaderField, IPv6HeaderField,
+    Immediate, Masquerade, Meta, MetaType, Nat, NatType, NetworkHeaderField, Register,
+    TCPHeaderField, TransportHeaderField, UDPHeaderField, VerdictKind,
 };
 use crate::{ProtocolFamily, Rule};
 
@@ -245,6 +245,23 @@ impl Rule {
             ip_register: Some(Register::Reg1),
             port_register: port.map(|_| Register::Reg2),
         });
+        self
+    }
+    /// Adds the `ExtHdr` expression to the rule. The packet will have
+    /// its MSS rewritten.
+    pub fn set_mss(mut self, mss: u16) -> Self {
+        self.add_expr(Immediate::new_data(
+            mss.to_be_bytes().to_vec(),
+            Register::Reg1,
+        ));
+        self.add_expr(
+            ExtHdr::default()
+                .with_sreg(Register::Reg1)
+                .with_typ(2u8)
+                .with_offset(2u32)
+                .with_len(2u32)
+                .with_op(ExtHdrOp::TCPOpt),
+        );
         self
     }
 }
