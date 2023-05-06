@@ -49,6 +49,9 @@ pub enum DecodeError {
     #[error("Unsupported value for an icmp reject type")]
     UnknownRejectType(u32),
 
+    #[error("Invalid type for a rt expression")]
+    UnknownRtKey(u32),
+
     #[error("Unsupported value for an icmp code in a reject expression")]
     UnknownIcmpCode(u8),
 

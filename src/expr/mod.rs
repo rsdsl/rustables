@@ -54,6 +54,9 @@ pub use self::reject::{IcmpCode, Reject, RejectType};
 mod register;
 pub use self::register::Register;
 
+mod rt;
+pub use self::rt::*;
+
 mod verdict;
 pub use self::verdict::*;
 
@@ -184,7 +187,8 @@ create_expr_variant!(
     [Meta, Meta],
     [Nat, Nat],
     [Payload, Payload],
-    [Reject, Reject]
+    [Reject, Reject],
+    [Rt, Rt]
 );
 
 pub type ExpressionList = NfNetlinkList<RawExpression>;
