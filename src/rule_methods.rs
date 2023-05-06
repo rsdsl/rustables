@@ -9,7 +9,7 @@ use crate::expr::ct::{ConnTrackState, Conntrack, ConntrackKey};
 use crate::expr::{
     Bitwise, Byteorder, ByteorderOp, Cmp, CmpOp, ExtHdr, ExtHdrOp, HighLevelPayload,
     IPv4HeaderField, IPv6HeaderField, Immediate, Masquerade, Meta, MetaType, Nat, NatType,
-    NetworkHeaderField, Payload, Register, Rt, TCPHeaderField, TransportHeaderField,
+    NetworkHeaderField, Payload, Register, Rt, RtKey, TCPHeaderField, TransportHeaderField,
     UDPHeaderField, VerdictKind,
 };
 use crate::sys::NFT_PAYLOAD_TRANSPORT_HEADER;
@@ -268,7 +268,11 @@ impl Rule {
     }
     /// Sets the TCP MSS to the path MTU observed by the routing cache.
     pub fn clamp_mss_to_pmtu(mut self) -> Self {
-        self.add_expr(Rt::default().with_dreg(Register::Reg1));
+        self.add_expr(
+            Rt::default()
+                .with_dreg(Register::Reg1)
+                .with_key(RtKey::TCPMSS),
+        );
         self.add_expr(
             Byteorder::default()
                 .with_sreg(Register::Reg1)
