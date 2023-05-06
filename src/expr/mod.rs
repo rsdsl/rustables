@@ -15,6 +15,9 @@ use crate::sys::{self, NFTA_EXPR_DATA, NFTA_EXPR_NAME};
 mod bitwise;
 pub use self::bitwise::*;
 
+mod byteorder;
+pub use self::byteorder::*;
+
 mod cmp;
 pub use self::cmp::*;
 
@@ -175,6 +178,7 @@ macro_rules! create_expr_variant {
 create_expr_variant!(
     ExpressionVariant,
     [Bitwise, Bitwise],
+    [Byteorder, Byteorder],
     [Cmp, Cmp],
     [Conntrack, Conntrack],
     [Counter, Counter],

@@ -67,6 +67,9 @@ pub enum DecodeError {
     #[error("Invalid type for a payload expression")]
     UnknownPayloadType(u32),
 
+    #[error("Invalid type for a byteorder expression")]
+    UnknownByteorderOp(u32),
+
     #[error("Invalid type for a compare expression")]
     UnknownCmpOp(u32),
 
