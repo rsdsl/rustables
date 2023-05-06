@@ -128,6 +128,12 @@ impl Rule {
         self.add_expr(Cmp::new(CmpOp::Eq, [libc::IPPROTO_IGMP as u8]));
         self
     }
+    /// Matches 6in4 packets.
+    pub fn ip6in4(mut self) -> Self {
+        self.add_expr(Meta::new(MetaType::NfProto));
+        self.add_expr(Cmp::new(CmpOp::Eq, [41]));
+        self
+    }
     /// Matches packets from source `port` and `protocol`.
     pub fn sport(self, port: u16, protocol: Protocol) -> Self {
         self.match_port(port, protocol, false)
