@@ -131,7 +131,11 @@ impl Rule {
     /// Matches 6in4 packets.
     pub fn ip6in4(mut self) -> Self {
         self.add_expr(Meta::new(MetaType::NfProto));
-        self.add_expr(Cmp::new(CmpOp::Eq, [41]));
+        self.add_expr(Cmp::new(CmpOp::Eq, [libc::NFPROTO_IPV4 as u8]));
+        self.add_expr(
+            HighLevelPayload::Network(NetworkHeaderField::IPv4(IPv4HeaderField::Protocol)).build(),
+        );
+        self.add_expr(Cmp::new(CmpOp::Eq, [41 as u8]));
         self
     }
     /// Matches packets from source `port` and `protocol`.
