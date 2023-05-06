@@ -7,9 +7,10 @@ use crate::data_type::ip_to_vec;
 use crate::error::BuilderError;
 use crate::expr::ct::{ConnTrackState, Conntrack, ConntrackKey};
 use crate::expr::{
-    Bitwise, Cmp, CmpOp, ExtHdr, ExtHdrOp, HighLevelPayload, IPv4HeaderField, IPv6HeaderField,
-    Immediate, Masquerade, Meta, MetaType, Nat, NatType, NetworkHeaderField, Payload, Register,
-    TCPHeaderField, TransportHeaderField, UDPHeaderField, VerdictKind,
+    Bitwise, Byteorder, ByteorderOp, Cmp, CmpOp, ExtHdr, ExtHdrOp, HighLevelPayload,
+    IPv4HeaderField, IPv6HeaderField, Immediate, Masquerade, Meta, MetaType, Nat, NatType,
+    NetworkHeaderField, Payload, Register, Rt, TCPHeaderField, TransportHeaderField,
+    UDPHeaderField, VerdictKind,
 };
 use crate::sys::NFT_PAYLOAD_TRANSPORT_HEADER;
 use crate::{ProtocolFamily, Rule};
@@ -255,6 +256,27 @@ impl Rule {
             mss.to_be_bytes().to_vec(),
             Register::Reg1,
         ));
+        self.add_expr(
+            ExtHdr::default()
+                .with_sreg(Register::Reg1)
+                .with_typ(2u8)
+                .with_offset(2u32)
+                .with_len(2u32)
+                .with_op(ExtHdrOp::TCPOpt),
+        );
+        self
+    }
+    /// Sets the TCP MSS to the path MTU observed by the routing cache.
+    pub fn clamp_mss_to_pmtu(mut self) -> Self {
+        self.add_expr(Rt::default().with_dreg(Register::Reg1));
+        self.add_expr(
+            Byteorder::default()
+                .with_sreg(Register::Reg1)
+                .with_dreg(Register::Reg1)
+                .with_op(ByteorderOp::HtoN)
+                .with_len(2u32)
+                .with_siz(2u32),
+        );
         self.add_expr(
             ExtHdr::default()
                 .with_sreg(Register::Reg1)
