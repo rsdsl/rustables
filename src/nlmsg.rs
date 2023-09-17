@@ -113,7 +113,7 @@ impl<'a> NfNetlinkWriter<'a> {
     }
 }
 
-pub type NetlinkType = u16;
+pub type NetlinkType = u32;
 
 pub trait AttributeDecoder {
     fn decode_attribute(&mut self, attr_type: NetlinkType, buf: &[u8]) -> Result<(), DecodeError>;

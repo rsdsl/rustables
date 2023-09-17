@@ -110,7 +110,7 @@ pub enum DecodeError {
     MissingExpressionName,
 
     #[error("Unsupported attribute type")]
-    UnsupportedAttributeType(u16),
+    UnsupportedAttributeType(u32),
 
     #[error("Unexpected message type")]
     UnexpectedType(u16),

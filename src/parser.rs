@@ -112,9 +112,9 @@ pub fn write_attribute<'a>(ty: NetlinkType, obj: &impl NfNetlinkAttribute, mut b
         // nla_len contains the header size + the unpadded attribute length
         nla_len: (header_len + obj.get_size() as usize) as u16,
         nla_type: if obj.is_nested() {
-            ty | NLA_F_NESTED as u16
+            (ty | NLA_F_NESTED) as u16
         } else {
-            ty
+            ty as u16
         },
     };
 
@@ -138,7 +138,7 @@ pub(crate) fn read_attributes<T: AttributeDecoder + Default>(buf: &[u8]) -> Resu
     while remaining_size > pad_netlink_object::<nlattr>() {
         let nlattr = unsafe { *transmute::<*const u8, *const nlattr>(buf[pos..].as_ptr()) };
         // ignore the byteorder and nested attributes
-        let nla_type = nlattr.nla_type & NLA_TYPE_MASK as u16;
+        let nla_type: u32 = (nlattr.nla_type & NLA_TYPE_MASK as u16).into();
 
         pos += pad_netlink_object::<nlattr>();
         let attr_remaining_size = nlattr.nla_len as usize - pad_netlink_object::<nlattr>();

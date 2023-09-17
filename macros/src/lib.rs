@@ -364,7 +364,7 @@ pub fn nfnetlink_struct(attrs: TokenStream, item: TokenStream) -> TokenStream {
         quote!(
             impl crate::nlmsg::AttributeDecoder for #name {
                 #[allow(dead_code)]
-                fn decode_attribute(&mut self, attr_type: u16, buf: &[u8]) -> Result<(), crate::error::DecodeError> {
+                fn decode_attribute(&mut self, attr_type: u32, buf: &[u8]) -> Result<(), crate::error::DecodeError> {
                     use crate::nlmsg::NfNetlinkDeserializable;
                     debug!("Decoding attribute {} in type {}", attr_type, std::any::type_name::<#name>());
                     match attr_type {

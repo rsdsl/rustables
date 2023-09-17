@@ -193,7 +193,7 @@ where
         while buf.len() - pos > pad_netlink_object::<nlattr>() {
             let nlattr = unsafe { *transmute::<*const u8, *const nlattr>(buf[pos..].as_ptr()) };
             // ignore the byteorder and nested attributes
-            let nla_type = nlattr.nla_type & NLA_TYPE_MASK as u16;
+            let nla_type: u32 = (nlattr.nla_type & NLA_TYPE_MASK as u16).into();
 
             if nla_type != NFTA_LIST_ELEM {
                 return Err(DecodeError::UnsupportedAttributeType(nla_type));
