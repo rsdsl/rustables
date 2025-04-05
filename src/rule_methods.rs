@@ -136,7 +136,7 @@ impl Rule {
             HighLevelPayload::Network(NetworkHeaderField::IPv6(IPv6HeaderField::NextHeader))
                 .build(),
         );
-        self.add_expr(Cmp::new(CmpOp::Eq, [4 as u8]));
+        self.add_expr(Cmp::new(CmpOp::Eq, [60 as u8]));
         self
     }
     /// Matches 6in4 packets.
